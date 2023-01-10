@@ -108,6 +108,9 @@ jobs:
             cd frontend
             npm install
             npm audit fix --force
+            npm update minimist
+            npm update loader-utils
+            npm update json5
             npm audit --audit-level=critical
 
   scan-backend:
