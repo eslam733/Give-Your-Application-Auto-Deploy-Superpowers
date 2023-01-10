@@ -39,22 +39,8 @@ jobs:
       - image: "cimg/base:stable"
     steps:
       - slack/notify:
-          custom: |
-            {
-              "blocks": [
-                {
-                  "type": "section",
-                  "fields": [
-                    {
-                      "type": "plain_text",
-                      "text": "*This is a text notification*",
-                      "emoji": true
-                    }
-                  ]
-                }
-              ]
-            }
-          event: always
+          event: pass
+          template: basic_success_1
   build-frontend:
     docker:
       - image: circleci/node:13.8.0
