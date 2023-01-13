@@ -3,6 +3,11 @@ orbs:
   slack: circleci/slack@4.12.0
 commands:
   notify_sucss:
+    description: "notify when process success"
+    parameters: 
+      notify: 
+        type: string
+        default: ""
     docker:
       - image: "cimg/base:stable"
     steps:
@@ -10,6 +15,11 @@ commands:
           event: pass
           template: basic_success_1
   notify_error:
+    description: "notify when process error"
+    parameters: 
+      notify: 
+        type: string
+        default: ""
     docker:
       - image: "cimg/base:stable"
     steps:
