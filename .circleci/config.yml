@@ -8,12 +8,15 @@ commands:
       - slack/notify:
           event: pass
           template: basic_success_1
+          name: Success
   notify_error:
     description: "notify when process error"
     steps:
       - slack/notify:
           event: fail
           template: basic_fail_1
+          name: Failure
+          when: on_fail
   # destroy-environment:
   #   description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
   #   parameters:
@@ -174,9 +177,7 @@ jobs:
           root: ~/
           paths:
             - project/.circleci/ansible/inventory.txt
-      - notify_error:
-          name: Failure
-          when: on_fail
+      - notify_error
       # Here's where you will add some code to rollback on failure
 
 #   configure-infrastructure:
