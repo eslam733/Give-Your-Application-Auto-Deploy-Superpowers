@@ -4,24 +4,12 @@ orbs:
 commands:
   notify_sucss:
     description: "notify when process success"
-    parameters: 
-      notify: 
-        type: string
-        default: ""
-    docker:
-      - image: "cimg/base:stable"
     steps:
       - slack/notify:
           event: pass
           template: basic_success_1
   notify_error:
     description: "notify when process error"
-    parameters: 
-      notify: 
-        type: string
-        default: ""
-    docker:
-      - image: "cimg/base:stable"
     steps:
       - slack/notify:
           event: fail
@@ -158,6 +146,7 @@ jobs:
   deploy-infrastructure:
     docker:
       - image: amazon/aws-cli
+      - image: "cimg/base:stable"
     steps:
       - checkout
       - run:
