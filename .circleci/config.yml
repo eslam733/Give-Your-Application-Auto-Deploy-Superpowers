@@ -190,8 +190,12 @@ jobs:
       - add_ssh_keys:
           fingerprints:
             - "e8:aa:1d:61:a6:3e:0c:d6:bf:e2:73:49:f8:6d:c9:c6"
-      - attach_workspace:
-          at: ~/
+      # - attach_workspace:
+      #     at: ~/
+      - run:
+          name: Add back-end ip to ansible inventory
+          command: |
+            aws ec2 describe-instances --query 'Reservations[].Instances[].[PrivateIpAddress,Tags[?Name==`backend-${ID}`]]' --output text > ~/project/.circleci/ansible/inventory.txt
       - run:
           name: Install dependencies
           command: |
