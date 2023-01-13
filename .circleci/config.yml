@@ -148,8 +148,8 @@ jobs:
 
   deploy-infrastructure:
     docker:
-      - image: amazon/aws-cli
       - image: cimg/base:stable
+      - image: amazon/aws-cli
     steps:
       - checkout
       - run:
