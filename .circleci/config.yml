@@ -8,15 +8,15 @@ commands:
       - slack/notify:
           event: pass
           template: basic_success_1
-          name: Success
   notify_error:
     description: "notify when process error"
     steps:
-      - slack/notify:
-          event: fail
-          template: basic_fail_1
-          name: Failure
-          when: on_fail
+      - when:
+          condition: on_fail
+          steps:
+            - slack/notify:
+                event: fail
+                template: basic_fail_1
   # destroy-environment:
   #   description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
   #   parameters:
