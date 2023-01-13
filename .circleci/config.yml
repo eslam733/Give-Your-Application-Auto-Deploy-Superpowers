@@ -174,7 +174,7 @@ jobs:
       - run:
           name: Add back-end ip to ansible inventory
           command: |
-            aws ec2 describe-instances --query 'Reservations[].Instances[].[PrivateIpAddress,Tags[?Name==`backend-${ID}`]| [0].Value]' --output text > ~/project/.circleci/ansible/inventory.txt
+            aws ec2 describe-instances --query 'Reservations[].Instances[].[PrivateIpAddress,Tags[?Name==`backend-${ID}`]]' --output text > ~/project/.circleci/ansible/inventory.txt
       - persist_to_workspace:
           root: ~/
           paths:
@@ -328,13 +328,13 @@ workflows:
       #     requires: [build-backend]
       # - scan-frontend:
       #     requires: [build-frontend]
-      - deploy-infrastructure
+      # - deploy-infrastructure
           # requires: [test-frontend, test-backend, scan-frontend, scan-backend]
           # filters:
           #   branches:
           #     only: [test-feature-branch]
-      - configure-infrastructure:
-          requires: [deploy-infrastructure]
+      - configure-infrastructure
+          # requires: [deploy-infrastructure]
       # - run-migrations:
       #     requires: [configure-infrastructure]
       # - deploy-frontend:
