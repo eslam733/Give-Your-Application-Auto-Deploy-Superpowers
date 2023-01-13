@@ -1,18 +1,32 @@
 version: 2.1
 orbs:
   slack: circleci/slack@4.12.0
-# commands:
-# destroy-environment:
-#   description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
-#   parameters:
-#     # Add parameter here
-#   steps:
-#     - run:
-#         name: Destroy environments
-#         when: on_fail
-#         command: |
-#           # Your code here
-#           exit 1
+commands:
+  notify_sucss:
+    docker:
+      - image: "cimg/base:stable"
+    steps:
+      - slack/notify:
+          event: pass
+          template: basic_success_1
+  notify_error:
+    docker:
+      - image: "cimg/base:stable"
+    steps:
+      - slack/notify:
+          event: fail
+          template: basic_faild_1
+  # destroy-environment:
+  #   description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
+  #   parameters:
+  #     # Add parameter here
+  #   steps:
+  #     - run:
+  #         name: Destroy environments
+  #         when: on_fail
+  #         command: |
+  #           # Your code here
+  #           exit 1
 
 # revert-migrations:
 #   description: Revert the last migration if successfully run in the current workflow.
@@ -34,13 +48,6 @@ orbs:
 #           fi
 
 jobs:
-  notify:
-    docker:
-      - image: "cimg/base:stable"
-    steps:
-      - slack/notify:
-          event: pass
-          template: basic_success_1
   build-frontend:
     docker:
       - image: circleci/node:13.8.0
@@ -138,39 +145,41 @@ jobs:
             npm update mkdirp --depth 2
             npm audit --audit-level=critical
 
-#   deploy-infrastructure:
-#     docker:
-#       # Docker image here that supports AWS CLI
-#     steps:
-#       # Checkout code from git
-#       - run:
-#           name: Ensure back-end infrastructure exists
-#           command: |
-#             aws cloudformation deploy \
-#               --template-file .circleci/files/backend.yml \
-#               #--tags project=your-tag \
-#               # --stack-name "your back-end stack name with workflow id" \
-#               # --parameter-overrides ID="your workflow id"
-#               exit 1
-#       - run:
-#           name: Ensure front-end infrastructure exist
-#           command: |
-#             aws cloudformation deploy \
-#               --template-file .circleci/files/frontend.yml \
-#               #--tags project=your-tag \
-#               # --stack-name "your front-end stack name with workflow id" \
-#               # --parameter-overrides ID="your workflow id"
-#               exit 1
-#       - run:
-#           name: Add back-end ip to ansible inventory
-#           command: |
-#             # Your code here
-#             exit 1
-#       - persist_to_workspace:
-#           root: ~/
-#           paths:
-#             - project/.circleci/ansible/inventory.txt
-#       # Here's where you will add some code to rollback on failure
+  deploy-infrastructure:
+    docker:
+      - image: amazon/aws-cli
+    steps:
+      - checkout
+      - run:
+          name: Ensure back-end infrastructure exists
+          command: |
+            aws cloudformation deploy \
+              --template-file .circleci/files/backend.yml \
+              --tags udapeople \
+              --stack-name "udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}" \
+              --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"
+      - run:
+          name: Ensure front-end infrastructure exist
+          command: |
+            aws cloudformation deploy \
+              --template-file .circleci/files/frontend.yml \
+              --tags udapeople \
+              --stack-name "udapeople-frondend-${CIRCLE_WORKFLOW_ID:0:7}" \
+              --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"
+      - run:
+          name: Add back-end ip to ansible inventory
+          command: |
+            echo [All] >> inventory.txt
+            aws ec2 describe-instances --query 'Reservations[].Instances[].[PrivateIpAddress,Tags[?Name==`backend-${ID}`]| [0].Value]' --output text > inventory.txt
+      - persist_to_workspace:
+          root: ~/
+          paths:
+            - project/.circleci/ansible/inventory.txt
+      - run:
+          name: Failure
+          command: notify_error
+          when: on_fail
+      # Here's where you will add some code to rollback on failure
 
 #   configure-infrastructure:
 #     docker:
@@ -306,8 +315,6 @@ jobs:
 workflows:
   default:
     jobs:
-      - notify:
-          context: slack-secrets
       - build-frontend
       - build-backend
       - test-frontend:
@@ -318,11 +325,11 @@ workflows:
           requires: [build-backend]
       - scan-frontend:
           requires: [build-frontend]
-      # - deploy-infrastructure:
-      #     requires: [test-frontend, test-backend, scan-frontend, scan-backend]
-      #     filters:
-      #       branches:
-      #         only: [test-feature-branch]
+      - deploy-infrastructure:
+          requires: [test-frontend, test-backend, scan-frontend, scan-backend]
+          # filters:
+          #   branches:
+          #     only: [test-feature-branch]
       # - configure-infrastructure:
       #     requires: [deploy-infrastructure]
       # - run-migrations:
