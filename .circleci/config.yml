@@ -252,7 +252,7 @@ jobs:
     steps:
       - checkout
       - run: yum install -y tar gzip
-      - run: yum install nodejs13.8.0
+      - run: yum install -y nodejs13
       - restore_cache:
           keys: [frontend-build]
       - run:
