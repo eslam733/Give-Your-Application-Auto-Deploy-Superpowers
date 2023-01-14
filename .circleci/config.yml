@@ -62,7 +62,6 @@ jobs:
           command: |
             cd frontend
             npm install
-            npm audit fix
             npm run build
       - save_cache:
           paths: [frontend/node_modules]
@@ -278,11 +277,6 @@ jobs:
           command: |
             cd frontend
             npm install
-            npm audit fix --force
-            npm update minimist --depth 4
-            npm update loader-utils --depth 2
-            npm update json5 --depth 3
-            npm audit --audit-level=critical
             npm run build:prod
             tar -czvf artifact-16f6778".tar.gz dist
             aws s3 cp dist s3://udapeople-16f6778 --recursive
