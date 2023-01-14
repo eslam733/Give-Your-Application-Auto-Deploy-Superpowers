@@ -145,11 +145,10 @@ jobs:
           command: |
             cd backend
             npm install
-            npm audit fix --force
-            npm install passport-jwt@4.0.1
-            npm update mkdirp --depth 2
             npm audit --audit-level=critical
-
+      - save_cache:
+          paths: [backend/node_modules]
+          key: backend-build
   deploy-infrastructure:
     docker:
       - image: amazon/aws-cli
@@ -366,8 +365,8 @@ workflows:
       #     requires: [build-frontend]
       - test-backend:
           requires: [build-backend]
-      # - scan-backend:
-      #     requires: [build-backend]
+      - scan-backend:
+          requires: [build-backend]
       # - scan-frontend:
       #     requires: [build-frontend]
       # - deploy-infrastructure:
