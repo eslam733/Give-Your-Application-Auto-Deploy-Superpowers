@@ -182,7 +182,7 @@ jobs:
             - project/.circleci/ansible/inventory.txt
       - notify_error
       # Here's where you will add some code to rollback on failure
-
+  #! just for test server connectivity
   test:
     docker:
       - image: amazon/aws-cli
@@ -344,15 +344,14 @@ workflows:
       #     requires: [build-backend]
       # - scan-frontend:
       #     requires: [build-frontend]
-      # - deploy-infrastructure
+      - deploy-infrastructure
       # requires: [test-frontend, test-backend, scan-frontend, scan-backend]
       # filters:
       #   branches:
       #     only: [test-feature-branch]
-      - test
+      # - test
       - configure-infrastructure:
-          requires: [test]
-        # requires: [deploy-infrastructure]
+          requires: [deploy-infrastructure]
       # - run-migrations:
       #     requires: [configure-infrastructure]
       # - deploy-frontend:
