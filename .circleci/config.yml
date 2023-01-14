@@ -62,6 +62,7 @@ jobs:
           command: |
             cd frontend
             npm install
+            npm audit fix
             npm run build
       - save_cache:
           paths: [frontend/node_modules]
@@ -256,9 +257,7 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          keys: [frontend-build]
-      - restore_cache:
-          keys: [frontend-package]
+          keys: [frontend-build, frontend-package]
       - run:
           name: Install dependencies
           command: |
