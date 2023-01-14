@@ -255,10 +255,6 @@ jobs:
       - image: amazon/aws-cli
     steps:
       - checkout
-      - run: yum install -y tar gzip
-      - node/install:
-          install-yarn: true
-          node-version: '13.8.0'
       - restore_cache:
           keys: [frontend-build]
       - restore_cache:
@@ -266,13 +262,10 @@ jobs:
       - run:
           name: Install dependencies
           command: |
-            cd frontend
-            npm install
-            npm audit fix --force
-            npm update minimist --depth 4
-            npm update loader-utils --depth 2
-            npm update json5 --depth 3
-            npm audit --audit-level=critical
+            yum install -y tar gzip
+      - node/install:
+          install-yarn: true
+          node-version: '13.8.0'
       - run:
           name: Get backend url
           command: |
@@ -286,7 +279,12 @@ jobs:
           command: |
             cd frontend
             npm install
-            npm run build
+            npm audit fix --force
+            npm update minimist --depth 4
+            npm update loader-utils --depth 2
+            npm update json5 --depth 3
+            npm audit --audit-level=critical
+            npm run build:prod
             tar -czvf artifact-16f6778".tar.gz dist
             aws s3 cp dist s3://udapeople-16f6778 --recursive
       # Here's where you will add some code to rollback on failure
