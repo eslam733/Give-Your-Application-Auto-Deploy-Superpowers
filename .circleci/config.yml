@@ -62,8 +62,6 @@ jobs:
           command: |
             cd frontend
             npm install
-            npm audit fix
-            touch .env
             npm run build
       - save_cache:
           paths: [frontend/node_modules]
