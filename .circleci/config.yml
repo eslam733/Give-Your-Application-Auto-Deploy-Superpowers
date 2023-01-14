@@ -130,8 +130,8 @@ jobs:
             npm update json5 --depth 3
             npm audit --audit-level=critical
       - save_cache:
-          paths: [frontend/package.json]
-          key: frontend-package
+          paths: [frontend/node_modules]
+          key: frontend-build
 
   scan-backend:
     docker:
@@ -256,16 +256,16 @@ jobs:
     steps:
       - checkout
       - run: yum install -y tar gzip
+      - node/install:
+          install-yarn: true
+          node-version: "13.8.0"
       - restore_cache:
-          keys: [frontend-build, frontend-package]
+          keys: [frontend-build]
       - run:
           name: Install dependencies
           command: |
             cd frontend
             npm install
-      - node/install:
-          install-yarn: true
-          node-version: "13.8.0"
       - run:
           name: Get backend url
           command: |
