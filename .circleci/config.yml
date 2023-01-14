@@ -231,8 +231,6 @@ jobs:
           command: |
             cd backend
             npm install
-            npm audit fix --force
-            npm audit fix
             npm run migrations > ~/project/backend/migrations_dump.text
       - persist_to_workspace:
           root: ~/
@@ -346,8 +344,8 @@ jobs:
 workflows:
   default:
     jobs:
-      - build-frontend
-      - build-backend
+      # - build-frontend
+      # - build-backend
       # - test-frontend:
       #     requires: [build-frontend]
       # - test-backend:
@@ -364,7 +362,7 @@ workflows:
       # - test
       # - configure-infrastructure:
       #     requires: [deploy-infrastructure]
-      # - run-migrations
+      - run-migrations
       #     requires: [configure-infrastructure]
       # - deploy-frontend:
       #     requires: [run-migrations]
