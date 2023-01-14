@@ -251,6 +251,8 @@ jobs:
       - image: amazon/aws-cli
     steps:
       - checkout
+      - run: yum install -y tar gzip
+      - run: yum install nodejs13.8.0
       - restore_cache:
           keys: [frontend-build]
       - run:
