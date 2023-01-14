@@ -1,6 +1,7 @@
 version: 2.1
 orbs:
   slack: circleci/slack@4.12.0
+  node: circleci/node@13.8
 commands:
   notify_sucss:
     description: "notify when process success"
@@ -252,7 +253,9 @@ jobs:
     steps:
       - checkout
       - run: yum install -y tar gzip
-      - run: yum install -y nodejs
+      - node/install:
+          install-yarn: true
+          node-version: '13.8'
       - restore_cache:
           keys: [frontend-build]
       - run:
