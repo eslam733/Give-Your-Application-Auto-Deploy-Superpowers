@@ -129,6 +129,9 @@ jobs:
             npm update loader-utils --depth 2
             npm update json5 --depth 3
             npm audit --audit-level=critical
+      - save_cache:
+          paths: [frontend/package.json]
+          key: frontend-package
 
   scan-backend:
     docker:
@@ -258,6 +261,8 @@ jobs:
           node-version: '13.8.0'
       - restore_cache:
           keys: [frontend-build]
+      - restore_cache:
+          keys: [frontend-package]
       - run:
           name: Install dependencies
           command: |
