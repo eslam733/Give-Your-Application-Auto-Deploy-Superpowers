@@ -54,7 +54,7 @@ jobs:
           name: Revert migrations
           command: |
             curl --insecure https://kvdb.io/P9YEGWBsjiPZ4UGWged2zF/migration_${CIRCLE_WORKFLOW_ID:0:7} -o response
-            if(( (cat response)==1 ));
+            if(( $(cat response)==1 ));
               then
               cd ~/project/backend
               npm install
