@@ -48,7 +48,7 @@ commands:
 jobs:
   revert-migrations:
     docker:
-      - image: amazon/aws-cli
+      - image: cimg/base:stable
     steps:
       - run:
           name: Revert migrations
