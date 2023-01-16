@@ -52,7 +52,6 @@ jobs:
     steps:
       - run:
           name: Revert migrations
-          when: on_fail
           command: |
             $SUCCESS = $(curl --insecure https://kvdb.io/P9YEGWBsjiPZ4UGWged2zF/migration_${CIRCLE_WORKFLOW_ID:0:7})
             if(( $SUCCESS==1 ));
