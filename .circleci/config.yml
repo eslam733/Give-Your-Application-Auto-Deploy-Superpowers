@@ -237,7 +237,7 @@ jobs:
       - persist_to_workspace:
           root: ~/
           paths:
-            - project/backend/migrations_dump.text
+            - project/backend/migrations_dump.txt
       - run:
           name: Send migration results to kvdb
           command: |
