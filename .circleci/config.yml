@@ -53,8 +53,9 @@ jobs:
       - run:
           name: Revert migrations
           command: |
-            if[[ "$(curl --insecure https://kvdb.io/P9YEGWBsjiPZ4UGWged2zF/migration_${CIRCLE_WORKFLOW_ID:0:7})" -eq "1" ]];
-              then
+            SUCCUESS = $(curl --insecure https://kvdb.io/P9YEGWBsjiPZ4UGWged2zF/migration_${CIRCLE_WORKFLOW_ID:0:7})
+            if (( $SUCCUESS == 1 ));
+            then
               cd ~/project/backend
               npm install
               npm run migrations:revert
