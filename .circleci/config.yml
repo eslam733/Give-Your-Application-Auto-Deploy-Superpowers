@@ -50,6 +50,7 @@ jobs:
     docker:
       - image: cimg/base:stable
     steps:
+      - checkout
       - run:
           name: Revert migrations
           command: |
