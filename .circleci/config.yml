@@ -56,7 +56,7 @@ jobs:
             SUCCUESS=$(curl --insecure https://kvdb.io/P9YEGWBsjiPZ4UGWged2zF/migration_31)
             if (( $SUCCUESS == 1 ));
             then
-              cd backend
+              cd ~/backend
               npm install
               npm run migrations:revert
             fi
