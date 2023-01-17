@@ -40,27 +40,12 @@ commands:
             SUCCUESS=$(curl --insecure https://kvdb.io/P9YEGWBsjiPZ4UGWged2zF/migration_${CIRCLE_WORKFLOW_ID:0:7})
             if (( $SUCCUESS == 1 ));
             then
-              cd ~/project/backend
+              cd backend
               npm install
               npm run migrations:revert
             fi
 
 jobs:
-  revert-migrations:
-    docker:
-      - image: cimg/base:stable
-    steps:
-      - checkout
-      - run:
-          name: Revert migrations
-          command: |
-            SUCCUESS=$(curl --insecure https://kvdb.io/P9YEGWBsjiPZ4UGWged2zF/migration_31)
-            if (( $SUCCUESS == 1 ));
-            then
-              cd backend
-              npm install
-              npm run migrations:revert
-            fi
   build-frontend:
     docker:
       - image: circleci/node:13.8.0
@@ -373,28 +358,27 @@ jobs:
 workflows:
   default:
     jobs:
-      - revert-migrations
-      # - build-frontend
-      # - build-backend
-      # - test-frontend:
-      #     requires: [build-frontend]
-      # - test-backend:
-      #     requires: [build-backend]
-      # - scan-backend:
-      #     requires: [build-backend]
-      # - scan-frontend:
-      #     requires: [build-frontend]
-      # - deploy-infrastructure:
-      #     requires: [test-frontend, test-backend, scan-frontend, scan-backend]
+      - build-frontend
+      - build-backend
+      - test-frontend:
+          requires: [build-frontend]
+      - test-backend:
+          requires: [build-backend]
+      - scan-backend:
+          requires: [build-backend]
+      - scan-frontend:
+          requires: [build-frontend]
+      - deploy-infrastructure:
+          requires: [test-frontend, test-backend, scan-frontend, scan-backend]
       # filters:
       #   branches:
       #     only: [test-feature-branch]
-      # - configure-infrastructure:
-      #     requires: [deploy-infrastructure]
-      # - run-migrations:
-      #     requires: [configure-infrastructure]
-      # - deploy-frontend:
-      #     requires: [run-migrations]
+      - configure-infrastructure:
+          requires: [deploy-infrastructure]
+      - run-migrations:
+          requires: [configure-infrastructure]
+      - deploy-frontend:
+          requires: [run-migrations]
       # - deploy-backend:
       #     requires: [run-migrations]
       # - smoke-test:
