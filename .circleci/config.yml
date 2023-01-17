@@ -37,7 +37,7 @@ commands:
           name: Revert migrations
           when: on_fail
           command: |
-            SUCCUESS = $(curl --insecure https://kvdb.io/P9YEGWBsjiPZ4UGWged2zF/migration_${CIRCLE_WORKFLOW_ID:0:7})
+            SUCCUESS=$(curl --insecure https://kvdb.io/P9YEGWBsjiPZ4UGWged2zF/migration_${CIRCLE_WORKFLOW_ID:0:7})
             if (( $SUCCUESS == 1 ));
             then
               cd ~/project/backend
@@ -53,8 +53,8 @@ jobs:
       - run:
           name: Revert migrations
           command: |
-            curl --insecure https://kvdb.io/P9YEGWBsjiPZ4UGWged2zF/migration_${CIRCLE_WORKFLOW_ID:0:7} -o SUCCUESS
-            if (( (cat SUCCUESS) == "1" ));
+            SUCCUESS=$(curl --insecure https://kvdb.io/P9YEGWBsjiPZ4UGWged2zF/migration_${CIRCLE_WORKFLOW_ID:0:7})
+            if (( $SUCCUESS == 1 ));
             then
               cd ~/project/backend
               npm install
