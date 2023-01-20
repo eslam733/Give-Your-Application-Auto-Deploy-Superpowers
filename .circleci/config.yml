@@ -311,7 +311,8 @@ jobs:
             cd ..
             cp backend/artifact.tar.gz .circleci/ansible/roles/deploy/files
             cd .circleci/ansible
-            cd roles/deploy/files
+            cd roles/deploy
+            cd files
             ls
             cd ..
             cd ..
