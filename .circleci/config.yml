@@ -22,8 +22,7 @@ commands:
                 template: basic_fail_1
   destroy-environment:
     description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
-    docker:
-      - image: amazon/aws-cli
+    executor: aws-cli/default
     steps:
       - run:
           name: Destroy environments
