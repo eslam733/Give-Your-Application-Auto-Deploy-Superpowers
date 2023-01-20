@@ -294,10 +294,15 @@ jobs:
           at: ~/
       - restore_cache:
           keys: [backend-build]
-      - run: yum install -y tar gzip
+      # - run: yum install -y tar gzip
       - node/install:
           install-yarn: true
           node-version: "13.8.0"
+      - run:
+          name: Install dependencies
+          command: |
+            apk add --update ansible
+            apk add --update tar
       - run:
           name: Deploy backend
           command: |
