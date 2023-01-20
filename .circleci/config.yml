@@ -2,8 +2,6 @@ version: 2.1
 orbs:
   slack: circleci/slack@4.12.0
   node: circleci/node@5.0.3
-  aws-cli: circleci/aws-cli@3.1.4
-  jq: circleci/jq@2.2.0
 commands:
   notify_sucss:
     description: "notify when process success"
@@ -22,7 +20,6 @@ commands:
                 template: basic_fail_1
   destroy-environment:
     description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
-    executor: aws-cli/default
     steps:
       - run:
           name: Destroy environments
@@ -297,10 +294,7 @@ jobs:
           at: ~/
       - restore_cache:
           keys: [backend-build]
-      - run:
-          name: Install dependencies
-          command: |
-            yum install -y tar gzip
+      - run: yum install -y tar gzip
       - node/install:
           install-yarn: true
           node-version: "13.8.0"
