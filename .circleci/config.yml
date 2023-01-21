@@ -380,6 +380,7 @@ jobs:
       - image: cimg/base:stable
     steps:
       - checkout
+      - install_awscli
       - run:
           name: save old workflow id to kvdb.io
           command: |
