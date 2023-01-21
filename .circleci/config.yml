@@ -181,7 +181,6 @@ jobs:
           root: ~/
           paths:
             - project/.circleci/ansible/inventory.txt
-      - notify_error
       - destroy-environment
   #! just for test server connectivity
   test:
@@ -204,6 +203,7 @@ jobs:
       - image: python:3.7-alpine3.11
     steps:
       - checkout
+      - install_awscli
       - add_ssh_keys:
           fingerprints:
             - "e8:aa:1d:61:a6:3e:0c:d6:bf:e2:73:49:f8:6d:c9:c6"
@@ -225,6 +225,7 @@ jobs:
       - image: circleci/node:13.8.0
     steps:
       - checkout
+      - install_awscli
       - restore_cache:
           keys: [backend-build]
       - run:
@@ -253,6 +254,7 @@ jobs:
       - image: amazon/aws-cli
     steps:
       - checkout
+      - install_awscli
       - run: yum install -y tar gzip
       - node/install:
           install-yarn: true
@@ -287,6 +289,7 @@ jobs:
       - image: python:3.7-alpine3.11
     steps:
       - checkout
+      - install_awscli
       - add_ssh_keys:
           fingerprints:
             - "e8:aa:1d:61:a6:3e:0c:d6:bf:e2:73:49:f8:6d:c9:c6"
@@ -328,13 +331,14 @@ jobs:
 
   smoke-test:
     docker:
-      - image: circleci/node:13.8.0
+      - image: cimg/base:stable
     steps:
       - checkout
+      - install_awscli
       - run:
           name: Get backend url
           command: |
-            export BACKEND_IP=$(aws ec2 describe-instances --query 'Reservations[*].Instances[*].PublicIpAddress' --filters "Name=tag:Name,Values=backend-fda5cc6" --output text)
+            export BACKEND_IP=$(aws ec2 describe-instances --query 'Reservations[*].Instances[*].PublicIpAddress' --filters "Name=tag:Name,Values=backend-201c515" --output text)
             export API_URL="http://${BACKEND_IP}:3030"
             echo "${API_URL}"
       - run:
@@ -349,14 +353,13 @@ jobs:
       - run:
           name: Frontend smoke test.
           command: |
-              URL="http://udapeople-fda5cc6.s3-website-us-east-1.amazonaws.com/#/employees"            
+              URL="http://udapeople-201c515.s3-website-us-east-1.amazonaws.com/#/employees"            
               echo ${URL} 
               if curl -s ${URL} | grep "Welcome"
                 then
-                    # Change this to 0 after the job fails
-                  exit 0
-                else
                   exit 1
+                else
+                  exit 2
               fi
       - destroy-environment
       - revert-migrations
@@ -408,20 +411,20 @@ workflows:
       #     requires: [build-backend]
       # - scan-frontend:
           # requires: [build-frontend]
-      - deploy-infrastructure
+      # - deploy-infrastructure
           # requires: [test-frontend, test-backend, scan-frontend, scan-backend]
       # filters:
       #   branches:
       #     only: [test-feature-branch]
-      - configure-infrastructure:
-          requires: [deploy-infrastructure]
-      - run-migrations:
-          requires: [configure-infrastructure]
-      - deploy-frontend:
-          requires: [run-migrations]
-      - deploy-backend:
-          requires: [run-migrations]
-      # - smoke-test
+      # - configure-infrastructure:
+      #     requires: [deploy-infrastructure]
+      # - run-migrations:
+      #     requires: [configure-infrastructure]
+      # - deploy-frontend:
+      #     requires: [run-migrations]
+      # - deploy-backend:
+      #     requires: [run-migrations]
+      - smoke-test
       #     requires: [deploy-backend, deploy-frontend]
       # - cloudfront-update:
       #     requires: [smoke-test]
