@@ -170,7 +170,6 @@ jobs:
       - image: cimg/base:stable
     steps:
       - checkout
-      - run: yum install -y tar gzip
       - install_awscli
       - run:
           name: Ensure back-end infrastructure exists
@@ -260,7 +259,6 @@ jobs:
     steps:
       - checkout
       - install_awscli
-      - run: yum install -y tar gzip
       - node/install:
           install-yarn: true
           node-version: "13.8.0"
@@ -284,7 +282,6 @@ jobs:
           command: |
             cd frontend
             npm run build:prod
-            tar -czvf artifact-${CIRCLE_WORKFLOW_ID:0:7}.tar.gz dist
             aws s3 cp dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --recursive
       - destroy-environment
       - revert-migrations
