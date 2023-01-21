@@ -206,15 +206,12 @@ jobs:
     steps:
       - checkout
       - install_awscli
+      - install_ansible
       - add_ssh_keys:
           fingerprints:
             - "e8:aa:1d:61:a6:3e:0c:d6:bf:e2:73:49:f8:6d:c9:c6"
       - attach_workspace:
           at: ~/
-      - run:
-          name: Install dependencies
-          command: |
-            apk add --update ansible
       - run:
           name: Configure server
           command: |
