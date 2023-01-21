@@ -3,6 +3,13 @@ orbs:
   slack: circleci/slack@4.12.0
   node: circleci/node@5.0.3
 commands:
+  install_nodejs:
+    description: install node 13
+    steps:
+      - node/install:
+          install-yarn: true
+          node-version: "13.8.0"
+
   install_ansible:
     description: Install Ansible
     steps:
@@ -222,7 +229,7 @@ jobs:
 
   run-migrations:
     docker:
-      - image: circleci/node:13.8.0
+      - image: cimg/python:3.10
     steps:
       - checkout
       - install_awscli
@@ -290,6 +297,8 @@ jobs:
     steps:
       - checkout
       - install_awscli
+      - install_ansible
+      - install_nodejs
       - add_ssh_keys:
           fingerprints:
             - "e8:aa:1d:61:a6:3e:0c:d6:bf:e2:73:49:f8:6d:c9:c6"
@@ -297,12 +306,10 @@ jobs:
           at: ~/
       - restore_cache:
           keys: [backend-build]
-      - run:
-          name: Install dependencies
-          command: |
-            apk add --update ansible
-            apk add --update tar
-            apk add --update npm
+      # - run:
+      #     name: Install dependencies
+      #     command: |
+      #       apk add --update tar
       - run:
           name: Install dependencies
           command: |
