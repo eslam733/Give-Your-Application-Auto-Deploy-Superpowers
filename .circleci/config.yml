@@ -301,21 +301,25 @@ jobs:
             apk add --update tar
             apk add --update npm
       - run:
-          name: Deploy backend
+          name: Install dependencies
           command: |
             cd backend
-            npm i
+            npm install
+      - run:
+          name: Package backend and archive dist folder and package.json files used to generate node modules
+          command: |
+            cd backend
             npm run build
-            # Zip the directory
             tar -czf artifact.tar.gz dist/* package*
             cd ..
-            mkdir .circleci/ansible/roles/deploy/files
             cp backend/artifact.tar.gz .circleci/ansible/roles/deploy/files
+      - run:
+          name: Deploy backend
+          command: |
             export TYPEORM_MIGRATIONS_DIR=./migrations
             export TYPEORM_ENTITIES=./modules/domain/**/*.entity{.ts,.js}
             export TYPEORM_MIGRATIONS=./migrations/*.ts
             cd .circleci/ansible
-            echo "Contents  of the inventory.txt file is -------"
             cat inventory.txt
             ansible-playbook -i inventory.txt deploy-backend.yml
       - destroy-environment
