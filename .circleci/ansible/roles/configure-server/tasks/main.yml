@@ -14,10 +14,14 @@
   apt:
     autoremove: yes
 
+- name: Install Python
+  raw: apt-get install -y python3
+
+
 - name: "install dependencies."
   become: True
   apt:
-    name: ["nodejs", "npm", "python"]
+    name: ["nodejs", "npm"]
     state: latest
     update_cache: yes
 
