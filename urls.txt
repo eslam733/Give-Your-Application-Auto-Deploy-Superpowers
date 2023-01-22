@@ -1,0 +1,9 @@
+[URL01] https://github.com/eslam733/cdond-c3-projectstarter
+
+[URL02] http://udapeople-52f0cac.s3-website-us-east-1.amazonaws.com/#/employees
+
+[URL03] http://dw3rm4vxsrnac.cloudfront.net
+
+[URL04] ec2-44-203-44-148.compute-1.amazonaws.com
+
+[URL05] ec2-3-92-182-129.compute-1.amazonaws.com	
